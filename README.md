@@ -21,6 +21,7 @@ I really doubt I will be able to write any usable code for this for a long while
 Let's start with my understanding of the basic user flow of an LLM, and I'll put in a little red flag every time there's a complication.
 
 **The inputs**
+
 1) A user inputs a sentence.
 2) That sentence is broken up into tokens (words or parts of words) 🚩
 3) These tokens are replaced with token IDs (just a number, an index), so that we can more easily reference their higher dimensional embeddings 🚩
@@ -29,9 +30,11 @@ Let's start with my understanding of the basic user flow of an LLM, and I'll put
 At this point, we have a bunch of vectors representing the rich context of each token
 
 **Transformer-land**
+
 5) Self-attention mechanisms are order agnostic, so before putting these token embeddings through a transformer, make sure to add additional positional encoding to the token embeddings so the resultant embedding contains semantic information of the word and its position in the sentence 🚩🚩
 
 *Encoder*
+
 6) The positionally aware token embeddings are then passed as a matrix to three different Linear Layers named the Query, Key, and Value layers, to create the Query, Key, and Value matrices 🚩🚩🚩
 7) The Query and Key matrices are multiplied together to create an attention filter, which represents how much each token cares about every other token
 8) This attention filter is then scaled 
