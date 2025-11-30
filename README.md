@@ -36,7 +36,14 @@ At this point, we have a bunch of vectors representing the rich context of each 
 *Encoder*
 
 6) The positionally aware token embeddings are then passed as a matrix to three different Linear Layers named the Query, Key, and Value layers, to create the Query, Key, and Value matrices 🚩🚩🚩
+    * Each Linear Layer shares a hidden vector dimensionality, basically flattening down the possible hundreds of token embedding layers. In a multi-headed attention model, the hidden vector dimensionality seems to be the token embedding dimensionality divided by the number of heads 🚩
 7) The Query and Key matrices are multiplied together to create an attention filter, which represents how much each token cares about every other token
-8) This attention filter is then scaled 
+    * The Key matrix is transposed in order to facilitate this matrix multiplication
+8) This attention filter is then scaled so that a large number of hidden dimensions in the Linear Layers don't adversely inflate the attention filter values. Basically divide by square root of the number of hidden dimensions in the linear layer 🚩🚩
+9) After scaling, we apply a softmax function to turn all the values in each row into an exponentially scaled probability distribution that represents which tokens are more important for each token to pay attention to 🚩
+10) This creates the final iteration of the attention filter, which basically does as it says. It is a filter that highlights what tokens are important to which other tokens. This attention filter is multiplied by the Value matrix, creating a matrix that is as long as the number of token inputs, and as wide as the number of hidden dimensions in the Linear Layers.
+11) In a multi-headed model, all the arrays are concatenated horizontally, such that the matrix becomes as wide as the number of heads multiplied by the hidden dimensions of the Linear Layers, e.g. The length of the embedding vectors! Congrats, we are back to what we started with!
+
+
 
 The process of writing out this list has taken many many hours. Every time I felt like I didn't understand why we were doing something, I would spend another hour bouncing between blogs and instructional videos, which themselves created more niche gaps in my understanding. I feel much more confident in my understanding of what is going on under the hood, but I would not recommend recreating this at all. It sucked. 
